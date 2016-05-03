@@ -2,12 +2,12 @@
 
 namespace AppBundle\Controller;
 
+use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class LuckyController extends Controller
+class LuckyController extends FOSRestController
 {
     /**
      * @Route("/lucky/number/{count}")
@@ -39,7 +39,7 @@ class LuckyController extends Controller
      * @param int $count
      * @return JsonResponse
      */
-    public function apiNumberAction(int $count) : JsonResponse
+    public function apiNumberAction(int $count) : Response
     {
         $numbers = [];
 
@@ -53,6 +53,16 @@ class LuckyController extends Controller
             $numbers[] = $number;
         }
 
-        return new JsonResponse($numbers);
+        $view = $this
+            ->view('', 200)
+            ->setTemplate('lucky/number.html.twig')
+            ->setTemplateData([
+                'var1' => 'var1',
+                'var2' => 0.324,
+                'var5' => new \stdClass(),
+                'lucky_numbers' => $numbers,
+            ]);
+
+        return $this->handleView($view);
     }
 }
