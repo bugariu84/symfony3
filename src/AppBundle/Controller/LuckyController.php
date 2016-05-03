@@ -3,10 +3,11 @@
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class LuckyController
+class LuckyController extends Controller
 {
     /**
      * @Route("/lucky/number/{count}")
@@ -21,15 +22,16 @@ class LuckyController
             $number = rand(1, 48);
 
             if (in_array($number, $numbers)) {
-                continue;
+                $number = rand(1, 48);
             }
 
             $numbers[] = $number;
         }
 
-        return new Response(
-            implode(',', $numbers)
-        );
+        $numbersList = implode(", ", $numbers);
+        $html = $this->render('lucky/number.html.twig', ['lucky_numbers' => $numbersList]);
+
+        return new Response($html);
     }
 
     /**
